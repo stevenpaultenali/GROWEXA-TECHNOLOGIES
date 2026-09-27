@@ -5,7 +5,9 @@ const crypto = require("crypto");
 const db = require("./database");
 
 const app = express();
-const PORT = 3000;
+
+// Render provides PORT automatically
+const PORT = process.env.PORT || 3000;
 
 
 // ===============================
@@ -54,11 +56,9 @@ function requireAuth(req, res, next) {
 // SERVE WEBSITE
 // ===============================
 
-app.use(
-    express.static(
-        path.join(__dirname, "..")
-    )
-);
+// Your server.js and index.html
+// are in the same main folder.
+app.use(express.static(__dirname));
 
 
 // ===============================
@@ -68,7 +68,7 @@ app.use(
 app.get("/", (req, res) => {
 
     res.sendFile(
-        path.join(__dirname, "..", "index.html")
+        path.join(__dirname, "index.html")
     );
 });
 
@@ -116,7 +116,10 @@ app.post("/api/enquiries", (req, res) => {
 
     } catch (error) {
 
-        console.error("CREATE ENQUIRY ERROR:", error);
+        console.error(
+            "CREATE ENQUIRY ERROR:",
+            error
+        );
 
         res.status(500).json({
             success: false,
@@ -324,7 +327,7 @@ const server = app.listen(
     () => {
 
         console.log(
-            `GROWEXA website + backend running on ${PORT}`
+            `GROWEXA website + backend running on port ${PORT}`
         );
     }
 );
@@ -337,9 +340,3 @@ server.on("error", (error) => {
         error
     );
 });
-
-
-// Keep server running
-setInterval(() => {
-    // Server keep-alive
-}, 1000);
